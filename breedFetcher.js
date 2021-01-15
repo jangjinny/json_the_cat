@@ -1,12 +1,11 @@
 const request = require('request'); //accessing request library
 
-const breedName = process.argv[2]; //grabbing the input from terminal
-const url = `https://api.thecatapi.com/v1/breeds/search?q=${breedName}`;
 
-const breedFetcher = (breedName) => {
+const fetchBreedDescription = (breedName, callback) => {
+  const url = `https://api.thecatapi.com/v1/breeds/search?q=${breedName}`;
   request(url, (error, response, body) => {
     if (error) {
-      console.log('Error:', error);
+      callback('Error:', error);
       return;
     }
 
@@ -14,14 +13,11 @@ const breedFetcher = (breedName) => {
     const catBreed = data[0];
 
     if (!catBreed) {
-      console.log('This breed does not exist in our data. Please input breeds ID. For example, sib for Siberian.');
-      return;
+      callback(error, null);
     } else {
-      console.log(catBreed.description);
+      callback(null, catBreed.description);
     }
   });
 };
 
-breedFetcher(breedName);
-
-module.exports = { breedFetcher };
+module.exports = { fetchBreedDescription };
